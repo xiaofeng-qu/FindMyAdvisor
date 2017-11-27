@@ -1,0 +1,73 @@
+﻿@model IEnumerable<FindMyAdvisor.Models.Professor>
+
+@{
+    ViewBag.Title = "ReadCsv";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ReadCsv</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Bachelor.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Master.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhD.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rank.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Research.Research_Interest)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.University.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Join_Date)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bachelor.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Department.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Master.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PhD.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rank.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Research.Research_Interest)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.University.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Join_Date.Year)
+        </td>
+    </tr>
+}
+
+</table>

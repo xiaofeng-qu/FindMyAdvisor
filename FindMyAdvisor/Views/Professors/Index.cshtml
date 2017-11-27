@@ -1,0 +1,63 @@
+﻿@model IEnumerable<FindMyAdvisor.Models.Professor>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p>
+    @Html.ActionLink("Create New", "Create", new { area = "" }, new { @class = "btn btn-md orange signup" })
+</p>
+<table class="table table-hover table-condensed">
+    <thead class="thead-dark">
+        <tr>
+    <th>
+        Professor Name
+    </th>
+    <th>
+        University
+    </th>
+    <th>
+        Department
+    </th>
+    <th>
+        Rank
+    </th>
+    <th>
+        Research interest
+    </th>
+    @if (Session["role"] != null && Session["role"].ToString() == "admin")
+    {
+        <th></th>
+    }
+    </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr class="off-white">
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.University.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rank.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Research.Research_Interest)
+            </td>
+            @if (Session["role"] != null && Session["role"].ToString() == "admin")
+            {
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            }
+            </tr>
+            }
+
+</table>

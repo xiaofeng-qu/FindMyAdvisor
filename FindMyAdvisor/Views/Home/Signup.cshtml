@@ -1,0 +1,38 @@
+﻿@model FindMyAdvisor.Models.User
+
+@{
+    ViewBag.Title = "Signup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Register", "Home", FormMethod.Post, new { id = "signupForm" }))
+{
+    <div class="container" style="margin-top:75px;">
+        <div class="row">
+            <div class="col-md-offset-3 col-md-6 well well-lg" style="background-color: rgba(254,254,254,.8)">
+                <h1>Sign Up</h1>
+                @Html.ValidationSummary()
+                <div class="form-group">
+                    @Html.LabelFor(m => m.DisplayName, new { @class = "sr-only", @for = "displayName" })
+                    @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control", id = "displayName", Name = "displayName", placeholder = "Dispay Name", maxlength = "50" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email, new { @class = "sr-only", @for = "email" })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "email", Name = "email", placeholder = "Email", maxlength = "50" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "sr-only", @for = "password" })
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "password", Name = "password", placeholder = "Choose a password", maxlength = "30" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "sr-only", @for = "confirmPassword"})
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "confirmPassword", Name = "confirmPassword", placeholder = "Confirm your password", maxlength = "30" })
+                </div>
+                <div style="text-align:right;">
+                    <input class="btn orange" name="signup" type="submit" value="Sign up">
+                    @Html.ActionLink("Cancel", "Index", "Home", new { area = "" }, new { @class = "btn btn-default" })
+                </div>
+             </div>
+        </div>
+    </div>
+}

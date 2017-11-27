@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<!--Jumbotron with sign up button-->
+<div class="jumbotron" id="myContainer">
+    <h1>Find My Advisor</h1>
+    <p>Our goal is help you find your right advisor, right research field, and your right future!</p>
+    @Html.ActionLink("Sign up-Start searching", "Signup", "Home", new { area = "" }, new { @class = "btn btn-lg orange signup" })
+</div>
