@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.ComponentModel.DataAnnotations;
+using PagedList;
 
 namespace FindMyAdvisor.ViewModels
 {
@@ -12,5 +13,6 @@ namespace FindMyAdvisor.ViewModels
     {
         public IEnumerable<Rank> Ranks { get; set; }
         public ProfessorDto Professor { get; set; }
+
     }
 }

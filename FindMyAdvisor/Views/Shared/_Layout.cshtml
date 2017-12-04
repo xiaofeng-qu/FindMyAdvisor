@@ -20,13 +20,26 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Professors", "Index", "Professors")</li>
-                    @if (Session["displayName"] != null)
-                    { <li>@Html.ActionLink("Users", "Index", "Users")</li> }
+                    @if (Session["displayName"] == null)
+                    {
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    }
+                    @if (Session["displayName"] != null && Session["role"].ToString() == "admin")
+                    {
+                        <li>@Html.ActionLink("Admin", "Admins", "Users")</li>
+                        <li>@Html.ActionLink("Search Professor", "Search", "Professors")</li>
+                        <li>@Html.ActionLink("Professors", "Index", "Professors")</li>
+                        <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                    }
+                    @if (Session["displayName"] != null && Session["role"].ToString() == "user")
+                    {
+                        <li>@Html.ActionLink("Account", "Users", "Users")</li>
+                        <li>@Html.ActionLink("Search Professor", "Search", "Professors")</li>
+                    }
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Welcome @Session["displayName"]</a></li>
                     @if (Session["displayName"] == null)

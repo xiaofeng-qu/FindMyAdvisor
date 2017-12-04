@@ -28,6 +28,7 @@
                     @Html.LabelFor(m => m.ConfirmPassword, new { @class = "sr-only", @for = "confirmPassword"})
                     @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "confirmPassword", Name = "confirmPassword", placeholder = "Confirm your password", maxlength = "30" })
                 </div>
+                @Html.HiddenFor(m => m.RoleId, new { @Value = 2})
                 <div style="text-align:right;">
                     <input class="btn orange" name="signup" type="submit" value="Sign up">
                     @Html.ActionLink("Cancel", "Index", "Home", new { area = "" }, new { @class = "btn btn-default" })

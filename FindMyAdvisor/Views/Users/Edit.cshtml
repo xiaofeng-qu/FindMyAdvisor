@@ -1,41 +1,40 @@
-﻿@model FindMyAdvisor.Models.User
+﻿@model FindMyAdvisor.ViewModels.UserEditFormViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("Save", "Users"))
+@using (Html.BeginForm("SaveEdit", "Users"))
 {
     <div class="container" style="margin-top:50px;">
         <div class="row">
             <div class="col-md-offset-2 col-md-8 well well-lg" style="background-color: rgba(245,245,245,.8)">
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.Id)
-                    @Html.HiddenFor(model => model.Password)
-                    <div class="form-group row">
-                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-form-label col-sm-4" })
-                        <div class="col-sm-8">
-                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
+                @Html.ValidationSummary()
+                <div class="form-group row">
+                    @Html.LabelFor(m => m.User.Email, htmlAttributes: new { @class = "control-form-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.User.Email, new { htmlAttributes = new { @class = "form-control" } })
                     </div>
-                    <div class="form-group row">
-                        @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = "control-form-label col-sm-4" })
-                        <div class="col-sm-8">
-                            @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(m => m.User.DisplayName, htmlAttributes: new { @class = "control-form-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(m => m.User.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
                     </div>
-                    <div class="form-group row">
-                        @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-form-label col-sm-4" })
-                        <div class="col-sm-8">
-                            @Html.EditorFor(model => model.Role, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Role</label>
+                    <div class="col-sm-8">
+                        @Html.DropDownListFor(m => m.User.RoleId, new SelectList(Model.Roles, "Id", "RoleName"), "Select a role", new { @class = "form-control" })
                     </div>
-                    <div style="text-align:left;">
-                        @Html.ActionLink("Back to List", "Index", new { area = "" }, new { @class = "btn btn-default pull-right" })
-                        <input type="submit" value="Save" class="btn orange" />
-                    </div>
+                </div>
+                @Html.HiddenFor(m => m.User.Id)
+                <div style="text-align:left;">
+                    @Html.ActionLink("Back to List", "Index", new { area = "" }, new { @class = "btn btn-default pull-right" })
+                    <input type="submit" value="Save" class="btn orange" />
                 </div>
             </div>
         </div>
+    </div>
 }

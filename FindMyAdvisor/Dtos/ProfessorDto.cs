@@ -10,8 +10,6 @@ namespace FindMyAdvisor.Dtos
 {
     public class ProfessorDto
     {
-        public int? Id { get; set; }
-
         [Display(Name = "Professor Name")]
         public string Name { get; set; }
 

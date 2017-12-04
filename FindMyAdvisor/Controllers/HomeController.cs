@@ -27,6 +27,18 @@ namespace FindMyAdvisor.Controllers
 
         public ActionResult Index()
         {
+            if (Session["role"] != null)
+            {
+                if (Session["role"].ToString() == "admin")
+                {
+                    return RedirectToAction("Admins", "Users");
+                }
+
+                if (Session["role"].ToString() == "user")
+                {
+                    return RedirectToAction("Users", "Users");
+                }
+            }
             return View();
         }
 
@@ -77,7 +89,6 @@ namespace FindMyAdvisor.Controllers
                 ModelState.AddModelError("", "Email already exists, go to login page.");
                 return View("Signup", user);
             }
-            user.Role = "user";
             _context.Users.Add(user);
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -92,16 +103,20 @@ namespace FindMyAdvisor.Controllers
                 ModelState.AddModelError("", "Email and password do not match.");
                 return View("Login", user);
             }
-            //else if( userInDb.Activation.ToLower() != "activated")
-            //{
-            //    ModelState.AddModelError("", "Accout has not been activated. Please use the link in your email to activate your account.");
-            //}
             else
             {
                 Session["displayName"] = userInDb.DisplayName;
-                Session["role"] = userInDb.Role;
+                Session["role"] = userInDb.Role.RoleName;
                 Session["id"] = userInDb.Id;
-                return RedirectToAction("Search", "Professors");
+                if(userInDb.Role.RoleName == "admin")
+                {
+                    return RedirectToAction("Admins", "Users");
+                }
+                else
+                {
+                    return RedirectToAction("Users", "Users");
+                }
+
             }
         }
 
@@ -112,7 +127,8 @@ namespace FindMyAdvisor.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult AddRecord()
+        [HttpPost]
+        public ActionResult Parse(HttpPostedFileBase file)
         {
             //Professor professor = new Professor() { Name="Chitta Baral", University = new University() { Name="Arizona State University"}, Join_Date=DateTime.Now, Department = new Department() { Name = "Computer Science" }, Rank = new Rank() { Name = "Full" }, Research = new Research() { Research_Interest = "Natural Language & Speech" }};
             //List<Professor> professors = new List<Professor>()
@@ -127,12 +143,17 @@ namespace FindMyAdvisor.Controllers
             //    _context.Professors.Add(p);
             //}
             //_context.SaveChanges();
-            using (var reader = new StreamReader(@"ds.csv"))
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Admin", "Users", file);
+            }
+
+            using (var reader = new StreamReader(file.InputStream))
             {
                 var line = reader.ReadLine();
                 string tempString;
                 int i = 0;
-                while (!reader.EndOfStream && i < 50)
+                while (!reader.EndOfStream && i < 100)
                 {
                     Professor professor = new Professor();
                     line = reader.ReadLine();
@@ -142,12 +163,15 @@ namespace FindMyAdvisor.Controllers
                     tempString = values[1].Trim('"');
                     if (_context.Universities.Any(m => m.Name == tempString))
                     {
-                        var univeristyId = _context.Universities.FirstOrDefault(m => m.Name == tempString).Id;
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
                         professor.UniversityId = univeristyId;
                     }
                     else
                     {
-                        professor.University = new University() { Name = tempString };
+                        _context.Universities.Add(new University() { Name = tempString });
+                        _context.SaveChanges();
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
+                        professor.UniversityId = univeristyId;
                     }
                     try
                     {
@@ -173,46 +197,72 @@ namespace FindMyAdvisor.Controllers
                     tempString = values[4].Trim('"');
                     if (_context.Researches.Any(m => m.Research_Interest == tempString))
                     {
-                        var researchId = _context.Researches.FirstOrDefault(m => m.Research_Interest == tempString).Id;
+                        var researchId = _context.Researches.Single(m => m.Research_Interest == tempString).Id;
                         professor.ResearchId = researchId;
                     }
                     else
                     {
-                        professor.Research = new Research() { Research_Interest = tempString };
+                        _context.Researches.Add(new Research() { Research_Interest = tempString });
+                        _context.SaveChanges();
+                        var researchId = _context.Researches.Single(m => m.Research_Interest== tempString).Id;
+                        professor.ResearchId = researchId;
                     }
                     tempString = values[5].Trim('"');
-                    if (_context.Universities.Any(m => m.Name == tempString))
+                    if (String.IsNullOrEmpty(tempString))
                     {
-                        var univeristyId = _context.Universities.FirstOrDefault(m => m.Name == tempString).Id;
+                        professor.BachelorId = null;
+                    }
+                    else if (_context.Universities.Any(m => m.Name == tempString))
+                    {
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
                         professor.BachelorId = univeristyId;
                     }
                     else
                     {
-                        professor.Bachelor = new University() { Name = tempString };
+                        _context.Universities.Add(new University() { Name = tempString });
+                        _context.SaveChanges();
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
+                        professor.BachelorId = univeristyId;
                     }
                     tempString = values[6].Trim('"');
-                    if (_context.Universities.Any(m => m.Name == tempString))
+                    if (String.IsNullOrEmpty(tempString))
                     {
-                        var masterId = _context.Universities.FirstOrDefault(m => m.Name == tempString).Id;
+                        professor.MasterId = null;
+                    }
+                    else if (_context.Universities.Any(m => m.Name == tempString))
+                    {
+                        var masterId = _context.Universities.Single(m => m.Name == tempString).Id;
                         professor.MasterId = masterId;
                     }
                     else
                     {
-                        professor.Master = new University() { Name = tempString };
+                        _context.Universities.Add(new University() { Name = tempString });
+                        _context.SaveChanges();
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
+                        professor.MasterId = univeristyId;
                     }
                     tempString = values[7].Trim('"');
-                    if (_context.Universities.Any(m => m.Name == tempString))
+                    if (String.IsNullOrEmpty(tempString))
                     {
-                        var phdId = _context.Universities.FirstOrDefault(m => m.Name == tempString).Id;
+                        professor.PhdId = null;
+                    }
+                    else if (_context.Universities.Any(m => m.Name == tempString))
+                    {
+                        var phdId = _context.Universities.Single(m => m.Name == tempString).Id;
                         professor.PhdId = phdId;
                     }
                     else
                     {
-                        professor.PhD = new University() { Name = tempString };
+                        _context.Universities.Add(new University() { Name = tempString });
+                        _context.SaveChanges();
+                        var univeristyId = _context.Universities.Single(m => m.Name == tempString).Id;
+                        professor.PhdId = univeristyId;
                     }
                     professor.Photo_Link = values[10].Trim('"');
                     professor.Homepage = values[11].Trim('"');
                     professor.DepartmentId = 1;
+                    professor.Likes = 0;
+                    if (_context.Professors.Any(m => m.Name == professor.Name && m.UniversityId == professor.UniversityId && m.DepartmentId == professor.DepartmentId)) continue;
                     _context.Professors.Add(professor);
                     ++i;
                 }
@@ -220,7 +270,7 @@ namespace FindMyAdvisor.Controllers
             // _context.Configuration.ValidateOnSaveEnabled = false;
             _context.SaveChanges();
             // _context.Configuration.ValidateOnSaveEnabled = true;
-            return Content("Something Wrong");
+            return RedirectToAction("Index","Professors");
         }
 
         public ActionResult ReadCsv()

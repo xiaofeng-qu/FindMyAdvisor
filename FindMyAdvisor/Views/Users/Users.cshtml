@@ -1,0 +1,66 @@
+﻿@model IEnumerable<FindMyAdvisor.Models.Professor>
+
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="jumbotron">
+    <h2>Hello, @Session["displayName"].ToString(). Welcome to your control panel.</h2>
+    @Html.ActionLink("Search", "Search", "Professors", new { area = "" }, new { @class = "btn orange" })
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h2>Your professor list</h2></div>
+    <div class="panel-body">
+        <table class="table table-hover table-condensed">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Professor Name
+                    </th>
+                    <th>
+                        University
+                    </th>
+                    <th>
+                        Department
+                    </th>
+                    <th>
+                        Rank
+                    </th>
+                    <th>
+                        Research Interest
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            @foreach (var item in Model)
+            {
+                <tr class="off-white">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.University.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rank.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Research.Research_Interest)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detail", "Detail", "Professors", new { id = item.Id }, null ) | 
+                        @Html.ActionLink("UnLike", "Unlike", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

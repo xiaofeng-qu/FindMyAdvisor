@@ -1,0 +1,26 @@
+﻿@model FindMyAdvisor.ViewModels.FileUploads
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h2>Hello, @Session["displayName"].ToString(). Welcome to your control panel.</h2>
+    @Html.ActionLink("Manage Professors", "Index", "Professors", new { area = "" }, new { @class = "btn btn-md orange signup" })
+    @Html.ActionLink("Manage Users", "Index", "Users", new { area = "" }, new { @class = "btn btn-md orange signup" })
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h2>Upload CSV to add new professors' data.</h2></div>
+    <div class="panel-body">
+        @using (Html.BeginForm("Parse", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary()
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.File, new { type = "file", @class = "form-control", id="file" })
+            </div>
+            <button type="submit" class="btn orange">Submit</button>
+        }
+    </div >
+</div>

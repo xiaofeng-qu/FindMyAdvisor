@@ -1,0 +1,121 @@
+﻿@model FindMyAdvisor.Models.Professor
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="well row" style="margin-top: 75px;">
+    <div class="col-sm-3">
+        <img class="img-thumbnail" src="@Model.Photo_Link" />
+        @if (ViewBag.Liked == "F")
+        {
+            <p style="margin-top: 15px;" id="like">
+                @Html.ActionLink("Like (" + @Model.Likes.ToString() + " likes)", "Like", new { id = Model.Id }, new { @class = "btn btn-success", style = "width: 100%" })
+            </p>
+        }
+        else
+        {
+            <p style="margin-top: 15px;" id="unlike">
+                @Html.ActionLink("UnLike (" + @Model.Likes.ToString() + " likes)", "UnLike", new { id = Model.Id }, new { @class = "btn btn-success", style = "width: 100%" })
+            </p>
+        }
+        <p style="margin-top: 15px; width: 100%;">
+            @if (Session["role"] != null && Session["role"].ToString() == "admin")
+            {
+                <span>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id, }, new { @class = "btn orange" })
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn orange" })
+                </span>
+            }
+            @Html.ActionLink("Back to List", "Index", new { area = "" }, new { @class = "btn orange" })
+        </p>
+    </div>
+    <div class="col-sm-9">
+        <h2>Dr. @Model.Name</h2>
+
+        <dl class="dl-horizontal">
+            <dt>
+                Rank
+            </dt>
+
+            <dd>
+                @Model.Rank.Name
+            </dd>
+
+            <dt>
+                Department
+            </dt>
+
+            <dd>
+                @Model.Department.Name
+            </dd>
+
+            <dt>
+                University
+            </dt>
+
+            <dd>
+                @Model.University.Name
+            </dd>
+
+            <dt>
+                Join Year
+            </dt>
+
+            <dd>
+                @Model.Join_Date.Year
+            </dd>
+
+            <dt>
+                Research Interest
+            </dt>
+
+            <dd>
+                @Model.Research.Research_Interest
+            </dd>
+
+            <dt>
+                PhD
+            </dt>
+
+            <dd>
+                @if (Model.PhdId != null)
+                {
+                    @Model.PhD.Name
+                }
+            </dd>
+
+            <dt>
+                Master
+            </dt>
+
+            <dd>
+                @if (Model.MasterId != null)
+                {
+                    @Model.Master.Name
+                }
+            </dd>
+
+            <dt>
+                Bachelor
+            </dt>
+
+            <dd>
+                @if (Model.BachelorId != null)
+                {
+                    @Model.Bachelor.Name
+                }
+            </dd>
+
+            <dt>
+                Website
+            </dt>
+
+            <dd>
+                Click <a href="@Model.Homepage" target="_blank">here</a> to visit the professor's website.
+            </dd>
+
+        </dl>
+    </div>
+</div>

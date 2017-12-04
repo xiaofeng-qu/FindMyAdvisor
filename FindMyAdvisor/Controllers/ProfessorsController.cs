@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace FindMyAdvisor.Controllers
 {
@@ -26,10 +27,61 @@ namespace FindMyAdvisor.Controllers
 
         // GET: Professors
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, int? page)
         {
-            var professors = _context.Professors.ToList();
-            return View(professors);
+            if (Session["role"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (Session["role"].ToString() != "admin")
+            {
+                return RedirectToAction("Users", "User");
+            }
+
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.UniversitySortParm = sortOrder == "univ" ? "univ_desc" : "univ";
+            ViewBag.DepartmentSortParm = sortOrder == "dept" ? "dept_desc" : "dept";
+            ViewBag.RankSortParm = sortOrder == "rank" ? "rank_desc" : "rank";
+            ViewBag.ResearchInterestSortParm = sortOrder == "ri" ? "ri_desc" : "ri";
+            var professors = _context.Professors.AsQueryable();
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    professors = professors.OrderByDescending(p => p.Name);
+                    break;
+                case "univ":
+                    professors = professors.OrderBy(p => p.University.Name);
+                    break;
+                case "univ_desc":
+                    professors = professors.OrderByDescending(p => p.University.Name);
+                    break;
+                case "dept":
+                    professors = professors.OrderBy(p => p.Department.Name);
+                    break;
+                case "dept_desc":
+                    professors = professors.OrderByDescending(p => p.Department.Name);
+                    break;
+                case "rank":
+                    professors = professors.OrderBy(p => p.RankId);
+                    break;
+                case "rank_desc":
+                    professors = professors.OrderByDescending(p => p.RankId);
+                    break;
+                case "ri":
+                    professors = professors.OrderBy(p => p.Research.Research_Interest);
+                    break;
+                case "ri_desc":
+                    professors = professors.OrderByDescending(p => p.Research.Research_Interest);
+                    break;
+                default:
+                    professors = professors.OrderBy(p => p.Name);
+                    break;
+            }
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            return View(professors.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Search()
@@ -43,49 +95,89 @@ namespace FindMyAdvisor.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var ranks = _context.Ranks.Distinct();
-            var viewModel = new ProfessorFormViewModel()
+            var ranks = _context.Ranks.ToList();
+            var viewModel = new ProfessorSearchResultViewModel()
             {
                 Ranks = ranks
             };
             return View(viewModel);
         }
 
-        [HttpPost]
-        public ActionResult Index(ProfessorDto professor)
+        public ActionResult SearchResults(ProfessorSearchResultViewModel professor, string sortOrder, int? page)
         {
-
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.UniversitySortParm = sortOrder == "univ" ? "univ_desc" : "univ";
+            ViewBag.DepartmentSortParm = sortOrder == "dept" ? "dept_desc" : "dept";
+            ViewBag.RankSortParm = sortOrder == "rank" ? "rank_desc" : "rank";
+            ViewBag.ResearchInterestSortParm = sortOrder == "ri" ? "ri_desc" : "ri";
             var professors = _context.Professors.AsQueryable();
             if (!string.IsNullOrEmpty(professor.Name))
             {
                 professors = professors.Where(m => m.Name.Contains(professor.Name));
             }
-            if (!string.IsNullOrEmpty(professor.University.Name))
+            if (!string.IsNullOrEmpty(professor.University))
             {
-                professors = professors.Where(m => m.University.Name.Contains(professor.University.Name));
+                professors = professors.Where(m => m.University.Name.Contains(professor.University));
             }
-            if (!string.IsNullOrEmpty(professor.Department.Name))
+            if (!string.IsNullOrEmpty(professor.Department))
             {
-                professors = professors.Where(m => m.Department.Name.Contains(professor.Department.Name));
+                professors = professors.Where(m => m.Department.Name.Contains(professor.Department));
             }
-            if (!string.IsNullOrEmpty(professor.Research.Research_Interest))
+            if (!string.IsNullOrEmpty(professor.ResearchInterest))
             {
-                professors = professors.Where(m => m.Research.Research_Interest.Contains(professor.Research.Research_Interest));
+                professors = professors.Where(m => m.Research.Research_Interest.Contains(professor.ResearchInterest));
             }
             if (professor.Join_Date.HasValue)
             {
                 professors = professors.Where(m => m.Join_Date.Year == professor.Join_Date.Value.Year);
             }
-            if (!string.IsNullOrEmpty(professor.GraduateFrom.Name))
+            if (!string.IsNullOrEmpty(professor.GraduateFrom))
             {
-                var gf = professor.GraduateFrom.Name;
+                var gf = professor.GraduateFrom;
                 professors = professors.Where(m => m.Bachelor.Name.Contains(gf) || m.Master.Name.Contains(gf) || m.PhD.Name.Contains(gf));
             }
             if (professor.RankId.HasValue)
             {
                 professors = professors.Where(m => m.RankId == professor.RankId);
             }
-            return View(professors.ToList());
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    professors = professors.OrderByDescending(p => p.Name);
+                    break;
+                case "univ":
+                    professors = professors.OrderBy(p => p.University.Name);
+                    break;
+                case "univ_desc":
+                    professors = professors.OrderByDescending(p => p.University.Name);
+                    break;
+                case "dept":
+                    professors = professors.OrderBy(p => p.Department.Name);
+                    break;
+                case "dept_desc":
+                    professors = professors.OrderByDescending(p => p.Department.Name);
+                    break;
+                case "rank":
+                    professors = professors.OrderBy(p => p.RankId);
+                    break;
+                case "rank_desc":
+                    professors = professors.OrderByDescending(p => p.RankId);
+                    break;
+                case "ri":
+                    professors = professors.OrderBy(p => p.Research.Research_Interest);
+                    break;
+                case "ri_desc":
+                    professors = professors.OrderByDescending(p => p.Research.Research_Interest);
+                    break;
+                default:
+                    professors = professors.OrderBy(p => p.Name);
+                    break;
+            }
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            professor.SearchResults = professors.ToPagedList(pageNumber, pageSize);
+            return View(professor);
         }
 
         public ActionResult Create()
@@ -148,9 +240,6 @@ namespace FindMyAdvisor.Controllers
 
         public ActionResult Save(Professor professor)
         {
-            ModelState.Remove("Bachelor");
-            ModelState.Remove("Master");
-            ModelState.Remove("PhD");
             if (!ModelState.IsValid)
             {
                 var viewModel = new ProfessorEditFormViewModel()
@@ -162,20 +251,152 @@ namespace FindMyAdvisor.Controllers
             }
             if (professor.Id == 0)
             {
-                _context.Professors.Add(professor);
+                Professor newProfessor = new Professor();
+                newProfessor.Name = professor.Name;
+                newProfessor.Join_Date = professor.Join_Date;
+                newProfessor.Homepage = professor.Homepage;
+                newProfessor.Photo_Link = professor.Photo_Link;
+                newProfessor.RankId = professor.RankId;
+                if (_context.Universities.Any(m => m.Name == professor.University.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.University.Name).Id;
+                    newProfessor.UniversityId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.University);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.University.Name).Id;
+                    newProfessor.UniversityId = univeristyId;
+                }
+                if (_context.Departments.Any(m => m.Name == professor.Department.Name))
+                {
+                    var departmentId = _context.Departments.Single(m => m.Name == professor.Department.Name).Id;
+                    newProfessor.DepartmentId = departmentId;
+                }
+                else
+                {
+                    newProfessor.Department = professor.Department;
+                }
+                if (_context.Researches.Any(m => m.Research_Interest == professor.Research.Research_Interest))
+                {
+                    var researchId = _context.Researches.Single(m => m.Research_Interest == professor.Research.Research_Interest).Id;
+                    newProfessor.ResearchId = researchId;
+                }
+                else
+                {
+                    newProfessor.Research = professor.Research;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.Bachelor.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Bachelor.Name).Id;
+                    newProfessor.BachelorId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.Bachelor);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Bachelor.Name).Id;
+                    newProfessor.BachelorId = univeristyId;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.Master.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Master.Name).Id;
+                    newProfessor.MasterId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.Master);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Master.Name).Id;
+                    newProfessor.MasterId = univeristyId;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.PhD.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.PhD.Name).Id;
+                    newProfessor.PhdId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.PhD);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.PhD.Name).Id;
+                    newProfessor.PhdId = univeristyId;
+                }
+                _context.Professors.Add(newProfessor);
             }
             else
             {
                 var professorInDb = _context.Professors.Single(m => m.Id == professor.Id);
                 professorInDb.Name = professor.Name;
-                professorInDb.University = professor.University;
-                professorInDb.Department = professor.Department;
+                if (_context.Universities.Any(m => m.Name == professor.University.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.University.Name).Id;
+                    professorInDb.UniversityId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.University);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.University.Name).Id;
+                    professorInDb.UniversityId = univeristyId;
+                }
+                if (_context.Departments.Any(m => m.Name == professor.Department.Name))
+                {
+                    var departmentId = _context.Departments.Single(m => m.Name == professor.Department.Name).Id;
+                    professorInDb.DepartmentId = departmentId;
+                }
+                else
+                {
+                    professorInDb.Department = professor.Department;
+                }
                 professorInDb.Join_Date = professor.Join_Date;
                 professorInDb.RankId = professor.RankId;
-                professorInDb.Research = professor.Research;
-                professorInDb.BachelorId = professor.BachelorId;
-                professorInDb.MasterId = professor.MasterId;
-                professorInDb.PhdId = professor.PhdId;
+                if (_context.Researches.Any(m => m.Research_Interest == professor.Research.Research_Interest))
+                {
+                    var researchId = _context.Researches.Single(m => m.Research_Interest == professor.Research.Research_Interest).Id;
+                    professorInDb.ResearchId = researchId;
+                }
+                else
+                {
+                    professorInDb.Research = professor.Research;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.Bachelor.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Bachelor.Name).Id;
+                    professorInDb.BachelorId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.Bachelor);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Bachelor.Name).Id;
+                    professorInDb.BachelorId = univeristyId;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.Master.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Master.Name).Id;
+                    professorInDb.MasterId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.Master);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.Master.Name).Id;
+                    professorInDb.MasterId = univeristyId;
+                }
+                if (_context.Universities.Any(m => m.Name == professor.PhD.Name))
+                {
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.PhD.Name).Id;
+                    professorInDb.PhdId = univeristyId;
+                }
+                else
+                {
+                    _context.Universities.Add(professor.PhD);
+                    _context.SaveChanges();
+                    var univeristyId = _context.Universities.Single(m => m.Name == professor.PhD.Name).Id;
+                    professorInDb.PhdId = univeristyId;
+                }
                 professorInDb.Homepage = professor.Homepage;
                 professorInDb.Photo_Link = professor.Photo_Link;
             }
@@ -232,9 +453,62 @@ namespace FindMyAdvisor.Controllers
         public ActionResult Delete(int id)
         {
             var professorInDb = _context.Professors.SingleOrDefault(m => m.Id == id);
+            if (professorInDb == null)
+            {
+                return HttpNotFound();
+            }
             _context.Professors.Remove(professorInDb);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Detail(int id)
+        {
+            var userId = Convert.ToInt32(Session["id"].ToString());
+            var professors = _context.Professors.Where(p => p.Users.Any(u => u.Id == userId)).SingleOrDefault(p => p.Id == id);
+            if(professors != null)
+            {
+                ViewBag.Liked = "T";
+            }else
+            {
+                ViewBag.Liked = "F";
+            }
+            var professor = _context.Professors.SingleOrDefault(m => m.Id == id);
+            if (professor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(professor);
+        }
+
+        public ActionResult Like(int id)
+        {
+            var professor = _context.Professors.SingleOrDefault(m => m.Id == id);
+            if(professor == null)
+            {
+                return HttpNotFound();
+            }
+            var userId = Convert.ToInt32(Session["id"].ToString());
+            var user = _context.Users.SingleOrDefault(m => m.Id == userId );
+            user.Professors.Add(professor);
+            professor.Likes += 1;
+            _context.SaveChanges();
+            return RedirectToAction("Detail", "Professors", new { id = id });
+        }
+
+        public ActionResult UnLike(int id)
+        {
+            var professor = _context.Professors.SingleOrDefault(m => m.Id == id);
+            if (professor == null)
+            {
+                return HttpNotFound();
+            }
+            var userId = Convert.ToInt32(Session["id"].ToString());
+            var user = _context.Users.SingleOrDefault(m => m.Id == userId);
+            user.Professors.Remove(professor);
+            professor.Likes -= 1;
+            _context.SaveChanges();
+            return RedirectToAction("Detail", "Professors", new { id = id });
         }
     }
 }

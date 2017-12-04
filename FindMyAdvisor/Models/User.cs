@@ -32,9 +32,10 @@ namespace FindMyAdvisor.Models
         [Compare("Password", ErrorMessage = "Password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        public virtual ICollection<Professor> Professors { get; set; } 
+        public virtual ICollection<Professor> Professors { get; set; }
 
-        [StringLength(16)]
-        public string Role { get; set; }
+        [Required]
+        public int RoleId { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

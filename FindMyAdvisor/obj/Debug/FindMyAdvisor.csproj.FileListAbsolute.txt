@@ -47,3 +47,11 @@ C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdv
 C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.ModifyProfessorTable_Research_Rank_Id.resources
 C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.UserAddDisplayName_AddUniqueConstrains.resources
 C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.IncreaseURLLinkSizeTo150.resources
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.UserRole.resources
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\bin\PagedList.dll
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\bin\PagedList.Mvc.dll
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\bin\PagedList.xml
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\bin\PagedList.Mvc.xml
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.SetNameFieldsUniqueForDepartmentRankResearchRoleAndUniversity.resources
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.IncreaseUniversityNameTo60.resources
+C:\Users\Jigougou\Documents\Study\Database Management\TP\FindMyAdvisor\FindMyAdvisor\obj\Debug\FindMyAdvisor.Migrations.IncreaseUniversityNameTo100.resources
