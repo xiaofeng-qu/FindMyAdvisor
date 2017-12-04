@@ -57,11 +57,11 @@
             @if (Session["role"] != null)
             {
                 <td>
+                    @Html.ActionLink("Detail", "Detail", new { id = item.Id })
                     @if (Session["role"].ToString() == "admin")
                     {
-                        <span>@Html.ActionLink("Edit", "Edit", new { id = item.Id }) | @Html.ActionLink("Delete", "Delete", new { id = item.Id }) | </span>
+                        <span> | @Html.ActionLink("Edit", "Edit", new { id = item.Id }) | @Html.ActionLink("Delete", "Delete", new { id = item.Id })</span>
                     }
-                    @Html.ActionLink("Detail", "Detail", new { id = item.Id })
                 </td>
             }
             </tr>
