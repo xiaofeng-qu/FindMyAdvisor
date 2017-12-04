@@ -474,7 +474,7 @@ namespace FindMyAdvisor.Controllers
                 ViewBag.Liked = "F";
             }
             var professor = _context.Professors.SingleOrDefault(m => m.Id == id);
-            var professors = _context.Professors.Where(m => m.University.Name == professor.University.Name && m.Id != professor.Id).Take(6).ToList();
+            var professors = _context.Professors.Where(m => m.Research.Research_Interest == professor.Research.Research_Interest && m.Id != professor.Id).OrderByDescending(m => m.Likes).Take(6).ToList();
             var viewModel = new ProfessorDetailViewModel()
             {
                 Professor = professor,
