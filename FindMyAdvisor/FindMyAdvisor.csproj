@@ -190,6 +190,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\FileUploads.cs" />
+    <Compile Include="ViewModels\ProfessorDetailViewModel.cs" />
     <Compile Include="ViewModels\ProfessorEditFormViewModel.cs" />
     <Compile Include="ViewModels\ProfessorFormViewModel.cs" />
     <Compile Include="ViewModels\ProfessorSearchResultViewModel.cs" />

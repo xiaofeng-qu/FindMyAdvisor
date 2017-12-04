@@ -465,8 +465,8 @@ namespace FindMyAdvisor.Controllers
         public ActionResult Detail(int id)
         {
             var userId = Convert.ToInt32(Session["id"].ToString());
-            var professors = _context.Professors.Where(p => p.Users.Any(u => u.Id == userId)).SingleOrDefault(p => p.Id == id);
-            if(professors != null)
+            var professorLiked = _context.Professors.Where(p => p.Users.Any(u => u.Id == userId)).SingleOrDefault(p => p.Id == id);
+            if(professorLiked != null)
             {
                 ViewBag.Liked = "T";
             }else
@@ -474,11 +474,18 @@ namespace FindMyAdvisor.Controllers
                 ViewBag.Liked = "F";
             }
             var professor = _context.Professors.SingleOrDefault(m => m.Id == id);
+            var professors = _context.Professors.Where(m => m.University.Name == professor.University.Name && m.Id != professor.Id).Take(6).ToList();
+            var viewModel = new ProfessorDetailViewModel()
+            {
+                Professor = professor,
+                Professors = professors
+            };
+
             if (professor == null)
             {
                 return HttpNotFound();
             }
-            return View(professor);
+            return View(viewModel);
         }
 
         public ActionResult Like(int id)

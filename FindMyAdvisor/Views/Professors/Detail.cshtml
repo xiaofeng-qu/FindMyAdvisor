@@ -1,38 +1,68 @@
-﻿@model FindMyAdvisor.Models.Professor
+﻿@model FindMyAdvisor.ViewModels.ProfessorDetailViewModel
 
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #card .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        margin: auto;
+        text-align: center;
+        background-color: white;
+    }
 
+    #card .title {
+        color: grey;
+        font-size: 18px;
+    }
+
+    #card button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    #card button:hover, #card a:hover {
+        opacity: 0.7;
+    }
+</style>
 <div class="well row" style="margin-top: 75px;">
     <div class="col-sm-3">
-        <img class="img-thumbnail" src="@Model.Photo_Link" />
+        <img class="img-thumbnail" src="@Model.Professor.Photo_Link" alt="@Model.Professor.Name" />
         @if (ViewBag.Liked == "F")
         {
             <p style="margin-top: 15px;" id="like">
-                @Html.ActionLink("Like (" + @Model.Likes.ToString() + " likes)", "Like", new { id = Model.Id }, new { @class = "btn btn-success", style = "width: 100%" })
+                @Html.ActionLink("Like (" + @Model.Professor.Likes.ToString() + " likes)", "Like", new { id = Model.Professor.Id }, new { @class = "btn btn-success", style = "width: 100%" })
             </p>
         }
         else
         {
             <p style="margin-top: 15px;" id="unlike">
-                @Html.ActionLink("UnLike (" + @Model.Likes.ToString() + " likes)", "UnLike", new { id = Model.Id }, new { @class = "btn btn-success", style = "width: 100%" })
+                @Html.ActionLink("UnLike (" + @Model.Professor.Likes.ToString() + " likes)", "UnLike", new { id = Model.Professor.Id }, new { @class = "btn btn-success", style = "width: 100%" })
             </p>
         }
         <p style="margin-top: 15px; width: 100%;">
             @if (Session["role"] != null && Session["role"].ToString() == "admin")
             {
                 <span>
-                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id, }, new { @class = "btn orange" })
-                    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn orange" })
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Professor.Id, }, new { @class = "btn orange" })
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Professor.Id }, new { @class = "btn orange" })
                 </span>
             }
             @Html.ActionLink("Back to List", "Index", new { area = "" }, new { @class = "btn orange" })
         </p>
     </div>
     <div class="col-sm-9">
-        <h2>Dr. @Model.Name</h2>
+        <h2>Dr. @Model.Professor.Name</h2>
 
         <dl class="dl-horizontal">
             <dt>
@@ -40,7 +70,7 @@
             </dt>
 
             <dd>
-                @Model.Rank.Name
+                @Model.Professor.Rank.Name
             </dd>
 
             <dt>
@@ -48,7 +78,7 @@
             </dt>
 
             <dd>
-                @Model.Department.Name
+                @Model.Professor.Department.Name
             </dd>
 
             <dt>
@@ -56,7 +86,7 @@
             </dt>
 
             <dd>
-                @Model.University.Name
+                @Model.Professor.University.Name
             </dd>
 
             <dt>
@@ -64,7 +94,7 @@
             </dt>
 
             <dd>
-                @Model.Join_Date.Year
+                @Model.Professor.Join_Date.Year
             </dd>
 
             <dt>
@@ -72,7 +102,7 @@
             </dt>
 
             <dd>
-                @Model.Research.Research_Interest
+                @Model.Professor.Research.Research_Interest
             </dd>
 
             <dt>
@@ -80,9 +110,9 @@
             </dt>
 
             <dd>
-                @if (Model.PhdId != null)
+                @if (Model.Professor.PhdId != null)
                 {
-                    @Model.PhD.Name
+                    @Model.Professor.PhD.Name
                 }
             </dd>
 
@@ -91,9 +121,9 @@
             </dt>
 
             <dd>
-                @if (Model.MasterId != null)
+                @if (Model.Professor.MasterId != null)
                 {
-                    @Model.Master.Name
+                    @Model.Professor.Master.Name
                 }
             </dd>
 
@@ -102,9 +132,9 @@
             </dt>
 
             <dd>
-                @if (Model.BachelorId != null)
+                @if (Model.Professor.BachelorId != null)
                 {
-                    @Model.Bachelor.Name
+                    @Model.Professor.Bachelor.Name
                 }
             </dd>
 
@@ -113,9 +143,27 @@
             </dt>
 
             <dd>
-                Click <a href="@Model.Homepage" target="_blank">here</a> to visit the professor's website.
+                Click <a href="@Model.Professor.Homepage" target="_blank">here</a> to visit the professor's website.
             </dd>
 
         </dl>
     </div>
+</div>
+<div class="row" id="card">
+    <h2>Professor you may interested in</h2>
+    @foreach (var professor in Model.Professors)
+    {
+        <div class="col-sm-2">
+            <div class="card">
+                <img src="@professor.Photo_Link" alt="@professor.Name" style="width:100%" class="img-thumbnail">
+                <h3>@professor.Name</h3>
+                <p class="title">@professor.Rank.Name Professor</p>
+                <p>@professor.Department.Name</p>
+                <p>@professor.University.Name</p>
+                <p>@professor.Join_Date.Year</p>
+                <p>@professor.Research.Research_Interest</p>
+                <p><button><a href="@professor.Homepage" target="_blank">Website</a></button><button>@Html.ActionLink("Detail", "Detail", "Professors", new { id = professor.Id }, null)</button></p>
+            </div>
+        </div>
+    }
 </div>
